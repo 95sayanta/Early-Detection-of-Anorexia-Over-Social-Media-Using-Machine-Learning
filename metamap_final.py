@@ -3,14 +3,18 @@
 """
 Created on Fri Mar  2 13:36:47 2018
 
+Sayanta Paul
+Ramakrishna Mission Vivekananda Educational and Research Institute
+sayanta95@gmail.com
+
 @author: sayanta
 """
-
+#importing essential packages to accomplish the task
 import csv
 import re
 from sklearn.multioutput import MultiOutputClassifier
 import codecs
-#
+#Here each of the function name indicates its funcionality
 def feature_generation_from_metamap_output(path,semantic_types,mm,rm,nfm,cl,opt): 
     #print('generating features for' + path)
     note = codecs.open(path,encoding='utf-8',mode='r').readlines()
@@ -85,10 +89,10 @@ def main():
     #inp1 = input("Choose : \n\t '1' to process raw text \n\t '2' to process metamap features from text \n\n")
     #inp2 = input("Choose : \n\t '1' to use the three annotators data for training \n\t '2' to use both one annotator and three annotators data for training \n\n")
 #    semantic_types=['Individual Behavior','Mental Process','Mental or Behavioral Dysfunction'] 
-               
+    #The semantic categories that have been considered for detecting Anorexia over the given corpus           
     semantic_types=['Biomedical Occupation or Discipline','Temporal Concept'                          # Initially we selected this set 
                     'Diagnostic Procedure','Disease or Syndrome','Finding',
-                    'Laboratory Procedure','Laboratory or Test Result',
+                    'Laboratory Procedure','Laboratory or Test Result','Food',
                     'Mental Process','Mental or Behavioral Dysfunction',
                     'Organic Chemical','Pharmacologic Substance','Sign or Symptom',
                     'Social Behavior','Temporal Concept','Natural Phenomenon or Process', 'Behavior'] 
