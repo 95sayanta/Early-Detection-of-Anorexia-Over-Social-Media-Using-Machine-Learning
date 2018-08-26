@@ -15,5 +15,7 @@ Besides, to implement RNN with proper word context, we have uesd GloVe(https://n
 Hence, if you have any issues regarding this project, e.g., code or concept, please feel free to drop an email at:  sayanta95@gmail.com
 
 Thanks and regards,
+
 Sayanta Paul
+
 Ramakrishna Mission Vivekananda Educational and Research Institute
