@@ -3,9 +3,14 @@
 """
 Created on Tue Feb  6 19:47:32 2018
 
+Sayanta Paul
+Ramakrishna Mission Vivekananda Educational and Research Institute
+email: sayanta95@gmail.com
+
 @author: sayanta
 """
 
+#Importing necessary packages
 import os
 import pandas as pd
 import numpy as np
@@ -29,21 +34,26 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.ensemble import AdaBoostClassifier
 
 
-
+"""
+main function contains all the data pre-processing part that necessary for the given corpus. The given data was in xml format,
+so instead creating a csv file, I have used the raw text part from each of the xml files during run-time. Therefore I have also 
+applied td-idf for numerical representation of data. 
+"""
 
 def main():
-    prefix='/home/sayanta/eRisk2018/eRisk 2018_anorexia_training'
+    prefix='/home/sayanta/eRisk2018/eRisk 2018_anorexia_training'   #Path where I kept all training and test data
     anorexia =[] ##empty list
     anorexia_test12345678910 = []
       
-    pos_folder='%s/selected_pos' % prefix
-    neg_folder='%s/selected_neg' % prefix
-    test12345678910_folder = '%s/test_12345678910' % prefix
+    pos_folder='%s/selected_pos' % prefix   #Folder containing positive(anorexia) sample
+    neg_folder='%s/selected_neg' % prefix   #Folder containing negative(non-anorexia) sample
+    test12345678910_folder = '%s/test_12345678910' % prefix   #Folder containing test sample
     
     listfiles=os.listdir(pos_folder)
     listfiles2=os.listdir(neg_folder)
     listfiles3 = os.listdir(test12345678910_folder)
     
+    #Extracting TEXT part from each of the xml files of Positive class
     anoPos = []  
     a=[]
     idp = []
@@ -59,6 +69,7 @@ def main():
       a.append(root[0].text+'\n'+pos_txt)
       idp.append(root[0].text)
     
+    #Positive class(anorexia) corresponds to 1
     anoPosWithClassLabels = []
     for i in anoPos:
         row = []
@@ -66,6 +77,7 @@ def main():
         row.append(1)
         anoPosWithClassLabels.append(row)
     
+    #Extracting TEXT part from each of the xml files of Negative class
     anoNeg =[]
     b=[]
     idn=[]
@@ -84,6 +96,7 @@ def main():
       b.append(root[0].text+'\n'+pos_txt)
       idn.append(root[0].text)
     
+    #Negative class(non-anorexia) corresponds to 2
     anoNegWithClassLabels = []
     for i in anoNeg:
         row = []
@@ -91,11 +104,12 @@ def main():
         row.append(2)
         anoNegWithClassLabels.append(row)
         
-       
+       #Now we have only the raw text data with proper labels, therefore we convert
+      #to dataframe for further processing
         anorexia = anoPosWithClassLabels + anoNegWithClassLabels
         anorexia = pd.DataFrame(anorexia)
-        #anorx=a+b
-          
+        
+    #Extracting raw text from test data     
     test12345678910 = []  
     c=[]
     idt=[]
@@ -110,7 +124,6 @@ def main():
       test12345678910.append(test_txt)  
       c.append([[root[0].text],[test_txt]])
       idt.append(root[0].text) 
-    #zer=pd.DataFrame(np.zeros((960,1)))
         
     anorexia = anoPosWithClassLabels + anoNegWithClassLabels
     anorexia = pd.DataFrame(anorexia)
@@ -135,7 +148,7 @@ data.to_csv("anorexia_test2.csv")# index=False,index_label=False)
                              use_idf=True)
     anorexia_train_data = pd.DataFrame(anorexia_train_data)
     anorexia_test_data = pd.DataFrame(anorexia_test_data)
-    tfidf = vectorizer.fit_transform([item[0] for item in anorexia_train_data.values.tolist()])
+    tfidf = vectorizer.fit_transform([item[0] for item in anorexia_train_data.values.tolist()]) 
     tfidf1 = vectorizer.transform([item[0] for item in anorexia_test_data.values.tolist()])
     term_freq1=tfidf.toarray()
     term_freq2=tfidf1.toarray()
@@ -151,7 +164,10 @@ data.to_csv("anorexia_test2.csv")# index=False,index_label=False)
     usr_choice(choice,final_tfidf_trn,final_tfidf_tst,anorexia_test_subject_names,anorexia_train_class)
             
     return;
-
+"""
+This following function is meant for the output file that is containing the class lebel of each of the test samples, i.e., 
+whether it is anorexia or non-anorexia.
+"""
 def OUTPUT(predicted,anorexia_test_subject_names):
     file = open("RKMVERI_13.txt",'w')
     for i in range(len(anorexia_test_subject_names)):
@@ -159,13 +175,17 @@ def OUTPUT(predicted,anorexia_test_subject_names):
         file.write(str(anorexia_test_subject_names[0].values[i])+'\t\t'+str(predicted[i])+'\n')
     file.close()
     return;
+  
+  """
+  Well, this function has been used for selecting features, best classifier parameters and of course, for train and the predict
+  """
  
 def GridSearch(final_tfidf_trn,final_tfidf_tst,anorexia_train_class,names,parameters,clf):
     pipeline2 = Pipeline([   
         ('feature_selection', SelectKBest(chi2, k= 2000)),    
         ('clf', clf),
     ])
-    grid = grid_search.GridSearchCV(pipeline2,parameters,cv=10)          
+    grid = grid_search.GridSearchCV(pipeline2,parameters,cv=10)   #10-fold cross-validation       
     grid.fit(final_tfidf_trn,anorexia_train_class)    
     clf = grid.best_estimator_                   # Best grid
     print('\n The best grid is as follows: \n')
@@ -175,7 +195,7 @@ def GridSearch(final_tfidf_trn,final_tfidf_tst,anorexia_train_class,names,parame
     predicted = list(predicted)
     OUTPUT(predicted,names)
     return;
-
+#The text classifiers with tuned parameter
 def usr_choice(choice,final_tfidf_trn,final_tfidf_tst,names,anorexia_train_class):
    if choice=="1":
         print("SVM is running...")
